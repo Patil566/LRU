@@ -1,0 +1,49 @@
+#include <stdio.h>
+int search(int frames[], int n, int page) {
+    for (int i = 0; i < n; i++) 
+        if (frames[i] == page) 
+            return i;
+    return -1;
+}
+void LRU(int pages[], int n, int frames[], int fsize) {
+    int  time[100], count = 0, faults = 0;
+    for (int i = 0; i < fsize; i++) 
+    frames[i] = -1;
+
+    for (int i = 0; i < n; i++) {
+        int pos = search(frames, fsize, pages[i]);
+        if (pos == -1)
+        {
+            int lru = 0;
+            if (count < fsize) 
+                pos = count++;
+            else {
+                for (int j = 1; j < fsize; j++) 
+                    if (time[j] < time[lru]) 
+                    lru = j;
+                pos = lru;
+            }
+            frames[pos] = pages[i];
+            faults++;
+        }
+        time[pos] = i;
+        printf("\nFrames: ");
+        for (int j = 0; j < fsize; j++) 
+            if (frames[j] != -1) 
+            printf("%d ", frames[j]);
+            else printf("- ");
+    }
+    printf("\nTotal Page Faults: %d\n", faults);
+}
+
+int main() 
+{
+    int ref[] = {3, 4, 5, 4, 3, 4, 7, 2, 4, 5, 6, 7, 2, 4, 6};
+    int fsize ;
+    printf("enter frames size");
+    scanf("%d",&fsize);
+    int n = sizeof(ref) / sizeof(ref[0]);
+    int frames[fsize];
+    LRU(ref, n, frames, fsize);
+    return 0;
+}
