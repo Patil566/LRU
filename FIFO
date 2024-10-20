@@ -1,0 +1,31 @@
+#include<stdio.h>
+int main() {
+    int fsize, page_faults = 0, index = 0;
+    int ref[] = {3, 4, 5, 6, 3, 4, 7, 3, 4, 5, 6, 7, 2, 4, 6};
+    int n = sizeof(ref) / sizeof(ref[0]);
+    printf("Enter number of frames:");
+    scanf("%d",&fsize);
+    int frame[fsize];
+    for (int i = 0; i < fsize; i++) 
+    frame[i] = -1;
+
+    for (int i = 0; i < n; i++) 
+    {
+        int found = 0;
+        for (int j = 0; j < fsize; j++)
+        if (frame[j] == ref[i]) 
+        found = 1;
+        if (!found) 
+        {
+            frame[index] = ref[i];
+            index = (index + 1) % fsize;
+            page_faults++;
+        }
+        printf("%d: ",ref[i]);
+        for (int j = 0; j < fsize; j++)
+        printf("%d ", frame[j] == -1 ? -1 : frame[j]);
+        printf("\n");
+    }
+    printf("Total Page Faults: %d\n", page_faults);
+    return 0;
+}
