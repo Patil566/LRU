@@ -1,0 +1,50 @@
+#include <stdio.h>
+int predict(int ref[], int n, int frames[], int fsize, int idx) 
+{
+    for (int i = 0; i < fsize; i++)
+    {
+        int j;
+        for (j = idx; j < n; j++)
+        if (frames[i] == ref[j]) 
+        break;
+        if (j == n) 
+        return i;
+    }
+    return 0;
+}
+void optimal(int ref[], int n,int frames[], int fsize) 
+{
+    int faults = 0, count = 0;
+    for (int i = 0; i < fsize; i++) 
+    frames[i] = -1;
+    for (int i = 0; i < n; i++)
+    {
+        int found = 0;
+        for (int j = 0; j < fsize; j++) 
+        if (frames[j] == ref[i])
+        { 
+            found = 1; 
+            break;
+            }
+        if (!found) 
+        {
+            if (count < fsize) frames[count++] = ref[i];
+            else frames[predict(ref, n, frames, fsize, i)] = ref[i];
+            faults++;
+        }
+        for (int j = 0; j < fsize; j++) 
+        printf(frames[j] == -1 ? "- " : "%d ", frames[j]);
+        printf("\n");
+    }
+    printf("Page Faults: %d\n", faults);
+}
+int main() {
+    int ref[] = {8, 5, 7, 8, 5, 7, 2, 3, 7, 3, 5, 9, 4, 6, 2};
+    int fsize ;
+    printf("enter frames size");
+    scanf("%d",&fsize);
+    int n = sizeof(ref) / sizeof(ref[0]);
+    int frames[fsize];
+    optimal(ref, n, frames, fsize);
+    return 0;
+}
